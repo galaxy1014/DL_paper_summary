@@ -81,4 +81,12 @@ AlexNet에서는 6천만 개의 파라미터를 사용한다. 하지만 ILSVRC �
 
 각기 다른 모델의 예측값들을 합치는 것은 test error를 줄이는 데 상당히 효율적이지만, 큰 신경망에서는 이미 훈련에 많은 시간을 투자했음에도 오랜 시간이 추가적으로 소모되기 때문에 상당히 비효율적이다. 그렇기 때문에 AlexNet은 이러한 고전적인 방법을 사용하지 않고 **dropout** 이라는 기술을 채택하였다. dropout은 버릴 뉴런의 비율을 선택하는 것으로 버려지는 뉴런은 정보(data)를 다음 layer에 넘겨주지 않으며 역전파에서도 해당되지 않는다.  
 
-이런 dropout을 사용하는 이유는 layer의 뉴런이 다른 뉴런들의 존재에 의존하지 않게 되어 layer의 복잡도가 줄어들기 때문이다. AlexNet에서는 최초 두 개의 전결합층에서 dropout을 사용했으며, dropout을 하지 않고 기존의 신경망처럼 훈련했을 경우 과적합이 발생하는것을 확인하였다.
+이런 dropout을 사용하는 이유는 layer의 뉴런이 다른 뉴런들의 존재에 의존하지 않게 되어 layer의 복잡도가 줄어들기 때문이다. AlexNet에서는 최초 두 개의 전결합층에서 dropout을 사용했으며, dropout을 하지 않고 기존의 신경망처럼 훈련했을 경우 과적합이 발생하는 것을 확인하였다.
+
+## 5. Details of learning  
+
+AlexNet을 훈련하는 데에는 **batch_size = 128, momentum = 0.9, weight decay = 0.0005인 stochastic gradient descent** 를 사용하였다.  
+> Gradient Descent를 계산함에 있어 데이터의 부분집합(Mini Batch)을 사용하는 방법이다.  
+
+모든 layer에는 동일한 **학습률(learning rate)** 을 사용했으며 validation error가 현재의 학습률에 대해서 더 이상 개선되지 않을 때에는 10으로 나누었다. 초기 학습률은 0.01로 시작하였으나 모델이 완성되기까지 총 세 번 학습률이 줄어들었다.  
+AlexNet은 대략 90번 훈련하였으며 훈련 셋은 120만 개의 이미지를 사용하였다. NVIDIA GTX 580 3GB GPU 두 개를 사용했을 때 훈련은 5~6일 소모되었다.
