@@ -65,3 +65,16 @@ AlexNet은 각기 가중치를 가지는 8개의 layer로 구성되어있다. �
 네 번째 convolutional layer는 세 번째 convolutional layer의 출력값을 입력받으며 3x3x192 크기의 커널을 384개 사용한다.  
 다섯 번째 convolutional layer는 네 번재 convolutional layer의 출력값을 입력받으며 3x3x192 크기의 커널을 256개 사용한다.  
 나머지 전결합층들은 각각 4096개의 커널을 가진다.  
+
+## 4. Reducing Overfitting  
+
+AlexNet에서는 6천만 개의 파라미터를 사용한다. 하지만 ILSVRC 버전의 ImageNet을 학습하게 되면 너무 많은 파라미터로 인해 과적합이 발생할 수 있으므로 AlexNet은 이 과적합을 예방하기 위해 두 가지 기술을 사용하였다.  
+
+### 4.1 Data Augmentation  
+
+이미디 데이터를 처리하는 데 있어 과적합을 줄이는 가장 쉬운 방법은 데이터 셋의 크기를 키우는 것이다. **데이터 증가(Data Augmentation)** 는 원본 이미지들을 조금씩 변경하여 새로운 이미지로 취급하는 것이다. 이렇게 변형된 이미지들은 디스크에 저장되지 않는다.  
+
+첫 번째 데이터 증가 방법은 **이미지 변환 및 수평 대칭(image translation and horizontal reflections)** 이다. 256x256 크기의 이미지로부터 수평 대칭한 224x224 크기의 패치를 무작위로 추출하여 훈련시킨다. 이렇게 하여 훈련 셋의 크기를 2048로 키울 수 있었으며, 데이터 증가를 하지 않고 훈련 시 과적합이 발생하였음을 확인하였다.  
+두 번째 데이터 증가 방법은 훈련 이미지의 RGB 채널 값을 키우는 것이다.  
+
+### 4.2 Dropout
