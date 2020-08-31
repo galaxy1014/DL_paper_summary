@@ -32,3 +32,17 @@
 ### 3.2 Training on Multiple GPUs  
 
 논문 작성 당시 120만 개의 훈련 데이터를 이용해 학습하기에는 메모리의 한계가 존재했기 때문에, 두 개의 GTX 580 GPU를 병렬연결하여 사용하였다.  
+
+### 3.3 Local Response Normalization(LRN)  
+
+ReLU의 장점 중 하나는 시그모이드나 하이퍼 탄젠트와 달리 데이터에 정규화를 요구하지 않는다는 것이다.  
+> 하이퍼 탄젠트와 시그모이드가 가질 수 있는 양의 결괏값은 최대 1로 한정되어 있으나, ReLU는 양수의 입력값을 그대로 반환하기 때문에 제한을 두지 않는다.  
+
+하지만 ReLU는 양의 방향으로 무한히 커질 수 있으며 이런 경우에는 인접값들이 무시될 수도 있기 때문에 정규화를 수행하는것이 일반적으로 좋다.  
+해당 논문에서는 AlexNet의 정규화 과정으로 **LRN(Local Response Normalization)** 을 사용했다. LRN의 값 (b(x,y))^i는 아래와 같다.  
+
+<img alt="LRN.png" src="https://user-images.githubusercontent.com/43739827/91700356-bd3ec380-ebb0-11ea-87c7-8037fe4ed18c.PNG"></img>  
+
+(a(x,y))^i는 좌표 (x,y)에서 커널 i를 적용하고 ReLU 함수를 적용한 뉴런이다. N은 layer의 전체 커널 수를 나타내며 나머지 상수 k, n, α, β는 **validation set** 을 구축하기 위한 **하이퍼 파라미터** 이다. AlexNet에서는 해당 파라미터들에 대하 **k = 2, n = 5, α = 10^-4, β = 0.75** 를 사용하였다.  
+
+### 3.4 Overlapping Pooling  
