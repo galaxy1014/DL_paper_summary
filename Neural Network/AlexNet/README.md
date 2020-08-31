@@ -110,4 +110,4 @@ ILSVRC-2012에서의 ImageNet을 validation과 테스트 셋으로 사용했을 
 |1 CNN* | 39.0% | 16.6% | -  
 |7 CNNs* | 36.7% | 15.4% | 15.3%  
 > Table 3. ILSVRC-2012 ImageNet(Validation & Test set)  
-> asterisk(*)은 ImageNet 2011로 pre-train 되어있음을 의미한다.
+>> asterisk(*)은 ImageNet 2011로 pre-train 되어있음을 의미한다.
