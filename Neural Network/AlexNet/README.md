@@ -49,3 +49,19 @@ ReLU의 장점 중 하나는 시그모이드나 하이퍼 탄젠트와 달리 �
 
 기존의 CNN들은 Pooling을 할 때 stride와 kernel size를 **같게** 하여 이미지의 크기를 절반으로 줄였지만, AlexNet에서는 **stride=2, kernel size=3** 으로 설정하여 Pooling이 겹치도록 하였다. 논문의 저자의 따르면 이러한 overlapping pooling 방식이 기존의 방식보다 과적합을 줄이는데 더 효율적이었다고 말하고있다.  
 > stride를 s, kernel size를 z라 했을 때, s=z라면 기존의 pooling 방식이며 s < z면 overlapping pooling이다.  
+
+### 3.5 Overall Architecture  
+
+AlexNet은 각기 가중치를 가지는 8개의 layer로 구성되어있다. 초기 5개의 layer들은 Convolutional layer이며 나머지 3개의 layer들은 **전결합층(fully-connected layer)** 이다. 출력층인 마지막 전결합층은 1000개의 뉴런에 대해 **softmax** 를 사용하였다.  
+
+<img alt="Architecture.png" src="https://user-images.githubusercontent.com/43739827/91701194-e744b580-ebb1-11ea-9a07-0c40e3a73ed4.png"></img>  
+> Fig 2. AlexNet Architecture  
+
+첫 번째 convolutional layer는 224x224x3의 이미지를 입력받아 11x11x3 크기의 커널을 96개 사용하며 이 때 stride는 4이다. 첫 번째 convolutional layer에는 정규화가 사용된다.  
+두 번째 convolutional layer는 첫 번째 convolutional layer의 출력값을 입력받으며 5x5x48 크기의 커널을 256개 사용한다. 두 번째 convolutional layer에도 정규화가 사용되며, 나머지 layer들에는 정규화가 더 이상 사용되지 않는다.  
+> layer에서 사용되는 정규화 방식들은 모두 LRN이다.  
+
+세 번째 convolutional layer는 두 번째 convolutional layer의 출력값을 입력받으며 3x3x256 크기의 커널을 384개 사용한다.  
+네 번째 convolutional layer는 세 번째 convolutional layer의 출력값을 입력받으며 3x3x192 크기의 커널을 384개 사용한다.  
+다섯 번째 convolutional layer는 네 번재 convolutional layer의 출력값을 입력받으며 3x3x192 크기의 커널을 256개 사용한다.  
+나머지 전결합층들은 각각 4096개의 커널을 가진다.  
