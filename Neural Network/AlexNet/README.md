@@ -90,3 +90,24 @@ AlexNet을 훈련하는 데에는 **batch_size = 128, momentum = 0.9, weight dec
 
 모든 layer에는 동일한 **학습률(learning rate)** 을 사용했으며 validation error가 현재의 학습률에 대해서 더 이상 개선되지 않을 때에는 10으로 나누었다. 초기 학습률은 0.01로 시작하였으나 모델이 완성되기까지 총 세 번 학습률이 줄어들었다.  
 AlexNet은 대략 90번 훈련하였으며 훈련 셋은 120만 개의 이미지를 사용하였다. NVIDIA GTX 580 3GB GPU 두 개를 사용했을 때 훈련은 5~6일 소모되었다.
+
+## 6. Result  
+
+ILSVRC-2010에서의 ImageNet을 테스트 셋으로 사용했을 때 AlexNet은 top-1과 top-5 error rate가 37.5%, 17.0% 였다.  
+|Model|Top-1|Top-5  
+|:----|:----|:----  
+|Sparse Coding | 47.1% | 28.2%  
+|SIFT + FVs | 45.7% | 25.7%  
+|CNN | 37.5% | 17,0%  
+> Table 2. ILSVRC-2010 ImageNet(Test set)  
+
+ILSVRC-2012에서의 ImageNet을 validation과 테스트 셋으로 사용했을 때 AlexNet은 top-1과 top-5 error rate가 36.7%와 15.3% 였다.  
+|Model|Top-1(Val)|Top-5(Val)|Top-5(Test)  
+|:----|:---------|:---------|:----------  
+|SIFT + FVs | - | - | 26.2%  
+|1 CNN | 40.7% | 18.2% | -  
+|5 CNNs | 38.1% | 16.4% | 16.4%  
+|1 CNN* | 39.0% | 16.6% | -  
+|7 CNNs* | 36.7% | 15.4% | 15.3%  
+> Table 3. ILSVRC-2012 ImageNet(Validation & Test set)  
+> asterisk(*)은 ImageNet 2011로 pre-train 되어있음을 의미한다.
