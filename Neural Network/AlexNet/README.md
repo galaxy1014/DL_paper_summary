@@ -166,3 +166,43 @@ CIFAR-10에 대한 더 구체적인 정보는 AlexNet의 1저자인 [Akex Jrizhe
 >>> test_dataset = tf.data.Dataset.from_tensor_slices((x_test, y_test))  
 >>> val_dataset = tf.data.Dataset.from_tensor_slices((x_val, y_val))
 ```
+
+먼저 훈련 데이터 셋과 레이블이 제대로 분리되었는지 시각화하여 확인하였다.  
+
+```Python  
+>>> Class_label = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog',
+              'frog', 'horse', 'ship', 'truck']  
+>>> %matplotlib inline  
+>>> from matplotlib import pyplot as plt  
+>>> plt.figure(figsize=(20, 20))  
+## take() 메서드는 해당 데이터 내에서 지정한 갯수만큼을 반환한다.  
+>>> for i, (image, label) in enumerate(train_dataset.take(5)):  
+>>>    ax = plt.subplot(5,5,i+1)  
+>>>    plt.imshow(image)  
+    ## label.numpy()[0]을 하는 이유는 단순히게 넘파이 변환을 하면 넘파이 배열이되어 Class_label이라는 리스트 내에서 요소를 불러올 수가 없다.   
+>>>    plt.title(Class_label[label.numpy()[0]])  
+>>>    plt.axis('off')  
+>>>    print(label.numpy().astype)  
+```  
+
+<img alt="Visualize.png" src="https://user-images.githubusercontent.com/43739827/92082086-0dab6080-edff-11ea-8458-f4c74c56bbfd.png"></img>  
+> Fig 4. CIFAR-10 Training data set visualization  
+
+
+이제 AlexNet에 이미지를 입력하기 위해 기존 CIFAR-10의 크기인 32x32를 227x227로 변환한다. 논문에서는 입력 이미지의 크기가 224x224이라고 언급되어있으나  
+이는 오타인것으로 보인다. 이것에 대한 설명으로는 [Learn OpenCV-Understanding AlexNet](https://www.learnopencv.com/understanding-alexnet/)의 Input 챕터에서  
+확인할 수 있다.  
+
+이미지를 전처리하기위해 **process_image**  라는 함수를 생성하였다.  
+
+```Python  
+## tf.image는 이미지의 전처리나 부호화-암호화 연산등을 수행하는 함수다.  
+## 각 이미지를 정규화하여(per_image_standardization) 학습을 빨리하고 local optimum의 위험을 줄인다.  
+## image의 resize 함수는 입력 이미지의 크기를 변형하고 텐서로 변환한다. 이 때의 텐서 type은 float32 이다.
+>>> def process_image(image, label):  
+>>>    image = tf.image.per_image_standardization(image)
+>>>    image = tf.image.resize(image, (227, 227))
+>>>    return image, label
+```  
+
+### 3. Data/Input Pipeline  
