@@ -206,3 +206,83 @@ CIFAR-10에 대한 더 구체적인 정보는 AlexNet의 1저자인 [Akex Jrizhe
 ```  
 
 ### 3. Data/Input Pipeline  
+
+먼저 데이터 셋을 **shuffle** 하기위해서는 데이터 셋들의 크기를 알 필요가 있다. **tf.data.experimental.cardinality** 는 데이터 셋의 크기를 반환하는 기능을 한다.  
+
+```Python  
+>>> tf.data.experimental.cardinality(train_dataset)
+```  
+
+```  
+<tf.Tensor: shape=(), dtype=int64, numpy=45000>
+```  
+
+```Python  
+>>> train_ds_size = tf.data.experimental.cardinality(train_dataset).numpy()  
+>>> test_ds_size = tf.data.experimental.cardinality(test_dataset).numpy()  
+>>> val_ds_size = tf.data.experimental.cardinality(val_dataset).numpy()  
+>>> print("Training data size:", train_ds_size)  
+>>> print("Test data size:", test_ds_size)  
+>>> print("Validation data size:", val_ds_size)
+```  
+
+```  
+Training data size: 45000  
+Test data size: 10000  
+Validation data size: 5000
+```  
+
+입력 데이터를 정제하기위해 세 가지의 과정을 거친다.  
+1. 데이터 셋 내부 데이터 전처리  
+2. 데이터 셋 shuffle  
+3. 데이터 셋 내부 데이터 batch  
+
+```Python  
+>>> train_dataset = (train_dataset  
+                    .map(process_image)  
+                    .shuffle(buffer_size=train_ds_size)  
+                    .batch(batch_size=32, drop_remainder=True))  
+>>> test_dataset = (test_dataset  
+                    .map(process_image)  
+                    .shuffle(buffer_size=train_ds_size)  
+                    .batch(batch_size=32, drop_remainder=True))  
+>>> val_dataset = (val_dataset  
+                    .map(process_image)  
+                    .shuffle(buffer_size=train_ds_size)  
+                    .batch(batch_size=32, drop_remainder=True))  
+>>> print(train_dataset)  
+>>> print(test_dataset)  
+>>> print(val_dataset)  
+```  
+
+```
+<BatchDataset shapes: ((32, 227, 227, 3), (32, 1)), types: (tf.float32, tf.uint8)>  
+<BatchDataset shapes: ((32, 227, 227, 3), (32, 1)), types: (tf.float32, tf.uint8)>  
+<BatchDataset shapes: ((32, 227, 227, 3), (32, 1)), types: (tf.float32, tf.uint8)>
+```  
+
+#### Shuffle  
+
+훈련하기 전에 데이터를 shuffle 하는것은 머신 러닝에서 전통적인 과정이다. 데이터 병합을 수행할 때 일반적으로 차례대로 축적된 이미지 혹은 데이터는 같은 클래스를 가진다.  
+즉, 데이터가 클래스별로 정렬되어 있는 것이다. 이러한 데이터를 아무런 처리없이 훈련하게 되면 신경망은 가장 먼저 나타나는 클래스의 패턴에 대해 집중적으로 학습하게 된다.  
+이러한 이유로 모델의 분산이 커지게 되기 때문에 shuffle을 하여 각 클래스를 대표하는 데이터가 에포크당 한 번씩은 나타나도록 한다.  
+
+* Shuffle을 하게 되면 얻게되는 두 가지 장점  
+1. 데이터 셋 내에는 훈련 데이터의 각 데이터가 망에 독립적으로 영향을 미칠 수 있도록 충분한 분산이 존재한다. 따라서 데이터 셋의 부분집합이 아닌 전체 데이터에 더 일반화 할 수 있는  
+망을 구축할 수 있게된다.  
+
+2. validation set은 훈련 셋에서 추출하는 것이므로 shuffle을 하지 않고 추출하게 되면 훈련 셋의 전체 클래스를 추출하는 것이 아닌 특정한 클래스만을 가지게 될 수 있다.  
+
+#### Batch  
+
+망을 훈련하는 방법에는 두 가지가 존재한다.  
+
+1. 모든 훈련 데이터를 망에 훈련시킨다.  
+2. 훈련 데이터를 8, 16, 32, 64처럼 일부분으로 작게 나누고(**Batch**), 각 반복마다 하나의 배치가 망에 사용된다.  
+
+첫 번째 방법은 작은 데이터 셋을 활용할 경우 잘 작동하지만 데이터 셋의 크기가 크다면 많은 메모리 자원을 소비하게 되며 이는 메모리 부족(Out of memory) 현상을 초래한다.  
+두 번째 방법은 큰 데이터 셋을 이용해 학습할 때  메모리를 효율적으로 관리하는 전통적인 학습 방법이다. 배치 사이즈를 지정하면 정해진 크기만큼의 메모리를 사용해 반복한다.  
+
+### 4. Model Implementation  
+
+AlexNet 논문에 나와있는 구조를 확인하고 이와 동일한 형태로 구현하였다.  
