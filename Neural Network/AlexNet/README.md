@@ -381,5 +381,99 @@ _________________________________________________________________
 학습된 모델에 대해서 train_loss, val_loss, train_acc, val_acc의 변화를 그래프로 확인한다.  
 
 ```Python  
+>>> fig, loss_ax = plt.subplots()  
+>>> acc_ax = loss_ax.twinx()  
 
+>>> loss_ax.plot(hist.history['loss'], 'y', label='train loss')  
+>>> loss_ax.plot(hist.history['val_loss'], 'r', label='val loss')  
+>>> loss_ax.set_ylim(0.0, 1.0)  
+
+>>> acc_ax.plot(hist.history['accuracy'], 'b', label='train acc')  
+>>> acc_ax.plot(hist.history['val_accuracy'], 'g', label='val acc')  
+>>> acc_ax.set_ylim(0.0, 1.0)  
+
+>>> loss_ax.set_xlabel('epoch')  
+>>> loss_ax.set_ylabel('loss')  
+>>> acc_ax.set_ylabel('accuracy')  
+
+>>> loss_ax.legend(loc='upper left')  
+>>> acc_ax.legend(loc='lower left')  
+
+>>> plt.show()
+```  
+
+<img alt="plot.png" src="https://user-images.githubusercontent.com/43739827/92109335-caafb400-ee23-11ea-8aaf-00add1a5750c.png"></img>  
+> Fig 5. Model visualization  
+>> val_loss가 대략 13번째 epoch부터 상승하는것을 확인할 수 있다. val_loss의 증가는 keras에서 주로 발생하는 원인이며 보통 이를 해결하기 위해 최적화의 방식을 바꾸거나 파라미터를 변경하지만  
+논문의 내용을 가급적 준수하고자 변경하지 않았다.  
+
+분류를 어느정도 정확하게 하는지 확인하기 위해 **predict** 함수를 사용하여 예측값과 CIFAR-10의 클래스 레이블간의 비교를 시각화하여 실시하였다.  
+
+```Python  
+# next와 iter는 파이썬 내장 함수다. iter를 통해 반복 가능한 객체에서 반복을하게되고,  
+# next는 값을 순서대로 꺼낸다.   
+
+>>> x_val, label_batch = next(iter(val_dataset))  
+
+>>> prediction_values = np.argmax(model.predict(x_val), axis=-1)  
+
+>>> fig = plt.figure(figsize=(10, 6))  
+>>> fig.subplots_adjust(left=0, right=1, bottom=0, top=1, hspace=0.05, wspace=0.05)  
+>>> fig.set_dpi(76)  
+
+>>> for i in range(16):  
+>>>    ax = fig.add_subplot(4, 4, i + 1, xticks=[], yticks=[])  
+>>>    ax.imshow(np.uint8(x_val[i, :]),cmap=plt.cm.gray_r, interpolation='nearest')  
+
+>>>    if prediction_values[i] == label_batch[i]:  
+>>>        ax.text(3, 17, Class_label[prediction_values[i]], color='blue', fontsize=14)  
+>>>    else:  
+>>>        ax.text(3, 17, Class_label[prediction_values[i]], color='red', fontsize=14)  
+```  
+
+<img alt="results.png" src="https://user-images.githubusercontent.com/43739827/92109744-8670e380-ee24-11ea-878c-24e602276dc1.png"></img>  
+> Fig 6. Model predict results  
+
+수치로 확인한 결과는 아래와 같다.  
+
+```Python  
+>>> print(prediction_values)   
+>>> print(label_batch)
+```  
+
+```  
+[2 4 7 9 2 9 9 5 5 4 6 6 4 9 3 7 3 9 4 3 5 1 1 2 3 9 2 2 8 2 8 1]  
+tf.Tensor(  
+[[2]  
+ [4]  
+ [7]  
+ [9]  
+ [2]  
+ [6]  
+ [9]  
+ [5]  
+ [5]  
+ [4]  
+ [6]  
+ [4]  
+ [4]  
+ [9]  
+ [7]  
+ [7]  
+ [3]  
+ [1]  
+ [4]  
+ [3]  
+ [5]  
+ [1]  
+ [1]  
+ [2]  
+ [3]  
+ [9]  
+ [2]  
+ [2]  
+ [8]  
+ [2]  
+ [9]  
+ [1]], shape=(32, 1), dtype=uint8)  
 ```
