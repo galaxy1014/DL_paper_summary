@@ -111,3 +111,58 @@ ILSVRC-2012에서의 ImageNet을 validation과 테스트 셋으로 사용했을 
 |7 CNNs* | 36.7% | 15.4% | 15.3%  
 > Table 3. ILSVRC-2012 ImageNet(Validation & Test set)  
 >> asterisk(*)은 ImageNet 2011로 pre-train 되어있음을 의미한다.
+
+## 7. Implementation  
+
+### 1. Tools / Libraries  
+
+AlexNet을 구현함에 있어 준비해야하는 라이브러리는 다음과 같다.  
+
+* Tensorflow  
+> 머신러닝 모델을 훈련이나 구현등에 사용하는 오픈소스 플랫폼이다.  
+
+* Keras  
+> 신경망 모델을 구현하고 CPU와 GPU를 이용하여 실행하기위해 사용하는 오픈소스 라이브러리다.  
+
+* Matplotlib  
+> 시각화를 위한 파이썬 툴이다.  
+
+```Python  
+>>> import tensorflow as tf  
+>>> from keras.datasets import cifar10  
+>>> from keras.models import Sequential  
+>>> from keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout, BatchNormalization  
+>>> import numpy as np  
+```  
+
+### 2. Dataset  
+
+CIFAR-10 데이터셋은 10개의 클래스를 가지는 **32x32 픽셀** 로 구성된 60000개의 컬러 이미지이며, 하나의 클래스마다 6000개의 이미지가 포함된다.  
+이 중 50000개가 훈련 이미지로 사용되며 나머지 10000개가 시험 이미지로 사용된다.  
+
+<img alt="cifar10.png" src="https://user-images.githubusercontent.com/43739827/91971486-3a566e00-ed54-11ea-88b1-95d1f122f341.PNG"></img>  
+> Fig 3. CIFAR-10 Data Set  
+
+CIFAR-10에 대한 더 구체적인 정보는 AlexNet의 1저자인 [Akex Jrizhevsky의 홈 페이지](https://www.cs.toronto.edu/~kriz/cifar.html)에서 확인할 수 있다.  
+
+먼저 **keras.datasets** 로 불러온 cifar10을 train과 test로 나눈다.  
+
+```Python  
+>>> (x_train, y_train), (x_test, y_test) = cifar10.load_data()
+```  
+
+훈련 데이터 셋에서 후에 있을 모델의 파라미터를 검증하기위해 일부를 validation set으로 나눈다.  
+
+```Python  
+>>> x_val, y_val = x_train[:5000], y_train[:5000]  
+>>> x_train, y_train = x_train[5000:], y_train[5000:]
+```  
+
+데이터 셋을 텐서플로우 함수나 메소드에서 사용하기 위해서는 **tf.data.Dataset** API를 사용해 변환할 필요가 있다.  
+여기서는 **tf.data.Dataset.from_tensor_slices** 메소드를 사용하여 train, test, validation 데이터 셋으로 나누어 반환하였다.  
+
+```Python  
+>>> train_dataset = tf.data.Dataset.from_tensor_slices((x_train, y_train))  
+>>> test_dataset = tf.data.Dataset.from_tensor_slices((x_test, y_test))  
+>>> val_dataset = tf.data.Dataset.from_tensor_slices((x_val, y_val))
+```
