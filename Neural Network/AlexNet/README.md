@@ -179,7 +179,7 @@ CIFAR-10에 대한 더 구체적인 정보는 AlexNet의 1저자인 [Akex Jrizhe
 >>> for i, (image, label) in enumerate(train_dataset.take(5)):  
 >>>    ax = plt.subplot(5,5,i+1)  
 >>>    plt.imshow(image)  
-    ## label.numpy()[0]을 하는 이유는 단순히게 넘파이 변환을 하면 넘파이 배열이되어 Class_label이라는 리스트 내에서 요소를 불러올 수가 없다.   
+## label.numpy()[0]을 하는 이유는 단순히게 넘파이 변환을 하면 넘파이 배열이되어 Class_label이라는 리스트 내에서 요소를 불러올 수가 없다.   
 >>>    plt.title(Class_label[label.numpy()[0]])  
 >>>    plt.axis('off')  
 >>>    print(label.numpy().astype)  
@@ -190,8 +190,7 @@ CIFAR-10에 대한 더 구체적인 정보는 AlexNet의 1저자인 [Akex Jrizhe
 
 
 이제 AlexNet에 이미지를 입력하기 위해 기존 CIFAR-10의 크기인 32x32를 227x227로 변환한다. 논문에서는 입력 이미지의 크기가 224x224이라고 언급되어있으나  
-이는 오타인것으로 보인다. 이것에 대한 설명으로는 [Learn OpenCV-Understanding AlexNet](https://www.learnopencv.com/understanding-alexnet/)의 Input 챕터에서  
-확인할 수 있다.  
+이는 오타인것으로 보인다. 이것에 대한 설명으로는 [Learn OpenCV-Understanding AlexNet](https://www.learnopencv.com/understanding-alexnet/)의 Input 챕터에서 확인할 수 있다.  
 
 이미지를 전처리하기위해 **process_image**  라는 함수를 생성하였다.  
 
@@ -285,4 +284,102 @@ Validation data size: 5000
 
 ### 4. Model Implementation  
 
-AlexNet 논문에 나와있는 구조를 확인하고 이와 동일한 형태로 구현하였다.  
+AlexNet [논문에 나와있는 구조](https://github.com/galaxy1014/DL_paper_summary/tree/master/Neural%20Network/AlexNet#35-overall-architecture)를 확인하고 이와 동일한 형태로 구현하였다.  
+
+```Python  
+>>> model = Sequential()  
+
+# first layer  
+>>> model.add(Conv2D(96, (11, 11), strides=4, activation='relu',
+                 input_shape=(227,227,3)))  
+>>> model.add(BatchNormalization())  
+>>> model.add(MaxPooling2D(pool_size=(3, 3), strides=2))  
+
+# second layer  
+>>> model.add(Conv2D(256, (5, 5), activation='relu', padding='same'))  
+>>> model.add(BatchNormalization())  
+>>> model.add(MaxPooling2D(pool_size=(3, 3), strides=2))  
+
+# third layer  
+>>> model.add(Conv2D(384, (3, 3), activation='relu', padding='same'))  
+
+# forth layer  
+>>> model.add(Conv2D(384, (3, 3), activation='relu', padding='same'))  
+
+# fifth layer  
+>>> model.add(Conv2D(256, (3, 3), activation='relu', padding='same'))  
+>>> model.add(MaxPooling2D(pool_size=(3, 3), strides=2))  
+
+>>> model.add(Flatten())  
+>>> model.add(Dense(4096, activation='relu'))  
+>>> model.add(Dropout(0.5))  
+>>> model.add(Dense(4096, activation='relu'))  
+>>> model.add(Dropout(0.5))  
+>>> model.add(Dense(1000, activation='softmax'))  
+
+>>> opt = tf.keras.optimizers.SGD(lr=0.001, decay=5e-5, momentum=0.9)  
+>>> model.compile(loss='sparse_categorical_crossentropy', optimizer=opt, metrics=['accuracy'])  
+>>> model.summary()
+```
+> 논문에서는 정규화 방법으로 LRN을 사용했으나 요즘의 딥러닝 알고리즘에선 LRN을 사용하는 대신 BatchNormalization을 사용하고 있다.  
+
+```  
+Model: "sequential"  
+_________________________________________________________________  
+Layer (type)                 Output Shape              Param #     
+=================================================================  
+conv2d (Conv2D)              (None, 55, 55, 96)        34944       
+_________________________________________________________________  
+batch_normalization (BatchNo (None, 55, 55, 96)        384         
+_________________________________________________________________  
+max_pooling2d (MaxPooling2D) (None, 27, 27, 96)        0           
+_________________________________________________________________  
+conv2d_1 (Conv2D)            (None, 27, 27, 256)       614656      
+_________________________________________________________________  
+batch_normalization_1 (Batch (None, 27, 27, 256)       1024        
+_________________________________________________________________  
+max_pooling2d_1 (MaxPooling2 (None, 13, 13, 256)       0           
+_________________________________________________________________  
+conv2d_2 (Conv2D)            (None, 13, 13, 384)       885120      
+_________________________________________________________________  
+conv2d_3 (Conv2D)            (None, 13, 13, 384)       1327488     
+_________________________________________________________________  
+conv2d_4 (Conv2D)            (None, 13, 13, 256)       884992      
+_________________________________________________________________  
+max_pooling2d_2 (MaxPooling2 (None, 6, 6, 256)         0           
+_________________________________________________________________  
+flatten (Flatten)            (None, 9216)              0           
+_________________________________________________________________  
+dense (Dense)                (None, 4096)              37752832    
+_________________________________________________________________  
+dropout (Dropout)            (None, 4096)              0           
+_________________________________________________________________  
+dense_1 (Dense)              (None, 4096)              16781312    
+_________________________________________________________________  
+dropout_1 (Dropout)          (None, 4096)              0           
+_________________________________________________________________  
+dense_2 (Dense)              (None, 1000)              4097000     
+=================================================================  
+Total params: 62,379,752  
+Trainable params: 62,379,048  
+Non-trainable params: 704  
+_________________________________________________________________
+```  
+
+### 5. Training and Results  
+
+모델을 학습하는 과정에서 callback 함수로 **EarlyStopping** 을 사용하여 더 이상 validation loss의 개선이 확인되지 않는다면 학습을 끝내도록 하였다.  
+
+```Python  
+>>> from keras.callbacks import EarlyStopping  
+# val_loss를 대상으로 관측하며 최소값으로부터 값이 커진다면 반복을 취소하며 최소 50번의 반복을 지켜본다.
+>>> early_stopping = EarlyStopping(monitor='val_loss', verbose = 1, mode='min', patience=50)
+>>> hist = model.fit(train_dataset, validation_data=val_dataset, validation_freq=1,
+                 epochs=100, batch_size=132, callbacks=[early_stopping])
+```  
+
+학습된 모델에 대해서 train_loss, val_loss, train_acc, val_acc의 변화를 그래프로 확인한다.  
+
+```Python  
+
+```
