@@ -485,5 +485,5 @@ tf.Tensor(
 [3] [Open Research, (Alexnet) ImageNet Classification with Deep Convolutional Neural Networks](http://openresearch.ai/t/alexnet-imagenet-classification-with-deep-convolutional-neural-networks/26)  
 [4] [데이터 사이언스 스쿨, AlexNet](https://datascienceschool.net/view-notebook/d19e803640094f76b93f11b850b920a4/)  
 [5] [동신한의 조재성 - 머신러닝, 딥러닝, 안드로이드 개발 in 남룡북매, 15. Batch size & Batch Norm](https://nittaku.tistory.com/293)  
-[6] [towards data science, Difference between Local Response Normalization and Batch Normalization](https://towardsdatascience.com/difference-between-local-response-normalization-and-batch-normalization-272308c034ac)
+[6] [towards data science, Difference between Local Response Normalization and Batch Normalization](https://towardsdatascience.com/difference-between-local-response-normalization-and-batch-normalization-272308c034ac)  
 [7] [Learn OpenCV, Understanding AlexNet](https://www.learnopencv.com/understanding-alexnet/)
