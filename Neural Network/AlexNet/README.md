@@ -477,3 +477,13 @@ tf.Tensor(
  [9]  
  [1]], shape=(32, 1), dtype=uint8)  
 ```
+
+## 8. References  
+
+[1] Alex Krizhevsky, "ImageNet Classification with Deep Convolutional Neural Networks"(2012)  
+[2] [towards data science, Implementing AlexNet CNN Architecture Using TensorFlow 2.0+ and Keras](https://towardsdatascience.com/implementing-alexnet-cnn-architecture-using-tensorflow-2-0-and-keras-2113e090ad98)  
+[3] [Open Research, (Alexnet) ImageNet Classification with Deep Convolutional Neural Networks](http://openresearch.ai/t/alexnet-imagenet-classification-with-deep-convolutional-neural-networks/26)  
+[4] [데이터 사이언스 스쿨, AlexNet](https://datascienceschool.net/view-notebook/d19e803640094f76b93f11b850b920a4/)  
+[5] [동신한의 조재성 - 머신러닝, 딥러닝, 안드로이드 개발 in 남룡북매, 15. Batch size & Batch Norm](https://nittaku.tistory.com/293)  
+[6] [towards data science, Difference between Local Response Normalization and Batch Normalization](https://towardsdatascience.com/difference-between-local-response-normalization-and-batch-normalization-272308c034ac)
+[7] [Learn OpenCV, Understanding AlexNet](https://www.learnopencv.com/understanding-alexnet/)
