@@ -73,7 +73,7 @@ hidden layer :
 Table 2는 parameter의 VGGNet의 parameter수를 나타낸다.
 
 parameter의 수는 _필터 크기 * # of input channel * # of output channel + # of bias_  로 나타내어 지는데, 대부분의 parameter는 3개의 FC layer에 의해 생성되어 A-E의 depth가 깊어지더라도 parameter의 수가 크게 차이 나지 않는다.
-![11](./imgimg/VGG_IMG11.PNG)
+![11](./img/VGG_IMG11.PNG)
 
 ## 2.3  Discussion
 
