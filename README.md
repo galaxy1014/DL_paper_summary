@@ -18,13 +18,14 @@ This repository analyzes and summarizes the deep learning papers.
 * [4.2 Dropout](https://github.com/galaxy1014/DL_paper_summary/tree/master/Neural%20Network/AlexNet#42-dropout)  
 5. [Details of learning](https://github.com/galaxy1014/DL_paper_summary/tree/master/Neural%20Network/AlexNet#5-details-of-learning)  
 6. [Result](https://github.com/galaxy1014/DL_paper_summary/tree/master/Neural%20Network/AlexNet#6-result)
-[2. VGGNet]
-0. [Abstract] 
-1. [Introduction]
-2. [ConvNet Configurations]
-* [2.1 Architecture]
-* [2.2 Configuration]
-* [2.3 Discussion]
-3. [Classification Framework]
-* [3.1 Training]
-4. [Conclusion]
+
+2. VGGNet
+  0. [Abstract] 
+  1. [Introduction]
+  2. [ConvNet Configurations]
+    * [2.1 Architecture]
+    * [2.2 Configuration]
+    * [2.3 Discussion]
+  3. [Classification Framework]
+    * [3.1 Training]
+  4. [Conclusion]
