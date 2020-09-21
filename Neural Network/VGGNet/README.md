@@ -27,7 +27,7 @@ image classification 분야에서 2014년 ILSVRC 대회에 2위의 performance �
 
 depth를 통한 성능 향상을 위해 3x3 convolution filter를 사용했다고 말하고 있다.
 
-# 2. ConveNet Configurations 
+# 2. ConvNet Configurations 
 
 ![5](./img/VGG_IMG05.PNG)
 
@@ -45,7 +45,7 @@ Convolution layer:
 
 convolution 연산에 stride = 1로 적용하고 zero-padding 또한 수행했다.
 
-max-pooling은 총 5번 2x2 window에 stride = 2로 적용했다고 한다.
+max-pooling은 총 5번 2x2 window에 stride = 2로 적용
 
 ![6](./img/VGG_IMG06.PNG)
 
@@ -59,7 +59,7 @@ hidden layer :
 
 여기서 저자는 AlexNet의 연구원들이 사용한 LRN(Local Response Normalization)을 사용하지 않았다고 언급하고 있다. (11-layer VGGNet에 한번 사용) 저자의 실험에서는 LRN은 성능 향상이 없었을뿐더러, 메모리 소비와 computation time을 증가시켰다고 함.
 
-## 2.2	Configureation
+## 2.2	Configuration
 ![7](./img/VGG_IMG07.PNG)
 
 ![8](./img/VGG_IMG08.PNG)
@@ -73,7 +73,7 @@ hidden layer :
 Table 2는 parameter의 VGGNet의 parameter수를 나타낸다.
 
 parameter의 수는 _필터 크기 * # of input channel * # of output channel + # of bias_  로 나타내어 지는데, 대부분의 parameter는 3개의 FC layer에 의해 생성되어 A-E의 depth가 깊어지더라도 parameter의 수가 크게 차이 나지 않는다.
-![11](./imgimg/VGG_IMG11.PNG)
+![11](./img/VGG_IMG11.PNG)
 
 ## 2.3  Discussion
 
